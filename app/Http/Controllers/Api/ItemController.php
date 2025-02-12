@@ -48,6 +48,12 @@ class ItemController extends Controller
     {
         Items::find($id)->delete();
     }
+
+
+    public function destroyAll() //no pasa
+    {
+        Items::all()->delete();
+    }
 }
 
 
