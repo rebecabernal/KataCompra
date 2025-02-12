@@ -9,10 +9,9 @@ use App\Http\Controllers\Controller;
 class ItemController extends Controller
 
 {
-
     public function index()
     {
-        return response()->json(Items::all(), 200);
+        return response()->json(Items::all());
     }
 
 
@@ -32,7 +31,7 @@ class ItemController extends Controller
         return response()->json(Items::find($id), 200);
     }
 
-    
+
     public function update(Request $request, string $id)
     {
         $item = Items::find($id);

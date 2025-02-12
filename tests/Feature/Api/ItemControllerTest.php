@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Items;
+use Database\Factories\ItemFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -12,38 +13,39 @@ class ItemControllerTest extends TestCase
     use RefreshDatabase;
 
 
-        public function test_GetElements()
+        public function test_GetItems()
     {   
-        Items::factory(10)->create();
-        
+        $response = $this->post('/api/items', [
+
+            'name' => 'test',
+        ]);
+
         $response = $this->get('/api/items');
 
-        $response->assertStatus(200)->assertJsonCount(10);
-    }
+        $response->assertStatus(200)->assertJsonCount(1)->assertJsonFragment([
 
-
-    public function test_GetElementById()
-    {   
-       Items::factory(10)->create();
-        
-        $response = $this->get('/api/items/1');
-
-        $response->assertStatus(200)->assertJsonFragment([
-            'id' => 1
+            'name' => 'test',
         ]);
     }
 
 
-    public function test_DeleteElement()
+    public function test_GetItemById()
     {   
-       Items::factory(10)->create();
-        
-        $response = $this->delete('/api/items/1');
-        $this->assertDatabaseCount('items', 9);
+        $response = $this->post('/api/items', [
+
+            'name' => 'test',
+        ]);
+
+        $response = $this->get('/api/items');
+
+        $response->assertStatus(200)->assertJsonCount(1)->assertJsonFragment([
+
+            'name' => 'test',
+        ]);
     }
 
 
-    public function test_CreateElement()
+    public function test_CreateItem()
     { 
         
         $response = $this->post('/api/items', [
@@ -62,22 +64,53 @@ class ItemControllerTest extends TestCase
     }
 
     
-    public function test_UpdateElements()
+    public function test_UpdateItems()
     {   
-       Items::factory(10)->create();
-        
-        $response = $this->put('/api/items/1', 
+        $response = $this->post('/api/items', [
+
+            'name' => 'test',
+        ]);
+
+        $response = $this->get(route('apiindex'));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['name' => $items->name]);
+
+        $response = $this->put(route('apiupdate', $items->id),
         [
-            'name' => 'test',
-
+            'name' => 'Modified Name',
+        
         ]);
 
-        $response = $this->get('/api/items/1');
+        $response = $this->get(route('apiindex'));
+        $response->assertStatus(200)
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['name' => 'Modified Name']);
+    }
 
-        $response->assertStatus(200)->assertJsonFragment([
+
+    public function test_DeleteItem()
+    {   
+        $response = $this->post('/api/items', [
 
             'name' => 'test',
-
         ]);
+
+        $response = $this->delete('/api/item/1');
+
+        $response->assertStatus(200)->assertJsonCount(0);
+    }
+
+    public function test_DeleteAllItem()
+    {   
+        $response = $this->post('/api/items', [
+
+            'name' => 'test',
+        ]);
+
+        $response = $this->delete('/api/items');
+
+        $response->assertStatus(200)->assertJsonCount(0);
     }
 }
