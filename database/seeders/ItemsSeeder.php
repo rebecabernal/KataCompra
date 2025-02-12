@@ -14,5 +14,25 @@ class ItemsSeeder extends Seeder
         $item = new Items();
         $item->name = "Milk";
         $item->save();
+
+        $item = new Items();
+        $item->name = "Potatoes";
+        $item->save();
+
+        $item = new Items();
+        $item->name = "Apples";
+        $item->save();
+
+        $item = new Items();
+        $item->name = "Eggs";
+        $item->save();
+
+        $item = new Items();
+        $item->name = "Yogurt";
+        $item->save();
+
+        $item = new Items();
+        $item->name = "Pepper";
+        $item->save();
     }
 }
